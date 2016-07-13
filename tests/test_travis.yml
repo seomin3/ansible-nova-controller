@@ -47,5 +47,5 @@
       when: ansible_os_family == 'RedHat'
     - openstack-keystone
     # This can be passed via cli variable maybe
-    - openstack-nova-controller
+    - role: openstack-nova-controller
       rabbit_hostname: dockerhost
