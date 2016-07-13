@@ -1,0 +1,50 @@
+---
+
+- name: Set nova API service facts
+  set_fact:
+    nova_api_service: nova-api
+  when: ansible_os_family == 'Debian'
+
+- name: Set nova API service facts
+  set_fact:
+    nova_api_service: openstack-nova-api
+  when: ansible_os_family == 'RedHat'
+
+- name: Set nova conductor service facts
+  set_fact:
+    nova_conductor_service: nova-conductor
+  when: ansible_os_family == 'Debian'
+
+- name: Set nova conductor service facts
+  set_fact:
+    nova_conductor_service: openstack-nova-conductor
+  when: ansible_os_family == 'RedHat'
+
+- name: Set nova consoleauth service facts
+  set_fact:
+    nova_consoleauth_service: nova-consoleauth
+  when: ansible_os_family == 'Debian'
+
+- name: Set nova consoleauth service facts
+  set_fact:
+    nova_consoleauth_service: openstack-nova-console
+  when: ansible_os_family == 'RedHat'
+
+- name: Set nova novncproxy service facts
+  set_fact:
+    nova_novncproxy_service: nova-novncproxy
+  when: ansible_os_family == 'Debian'
+
+- name: Set nova novncproxy service facts
+  set_fact:
+    nova_novncproxy_service: openstack-nova-novncproxy
+  when: ansible_os_family == 'RedHat'
+
+- name: Set nova scheduler service facts
+  set_fact:
+    nova_scheduler_service: nova-scheduler
+  when: ansible_os_family == 'Debian'
+- name: Set nova scheduler service facts
+  set_fact:
+    nova_scheduler_service: openstack-nova-scheduler
+  when: ansible_os_family == 'RedHat'

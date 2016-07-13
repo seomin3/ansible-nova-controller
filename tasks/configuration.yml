@@ -1,0 +1,106 @@
+---
+
+# Changing to 'simple' type to prevent hard dependency on other roles
+# See: http://lists.openstack.org/pipermail/openstack-dev/2015-December/083095.html
+- name: Fix systemd type
+  lineinfile:
+    dest: '/usr/lib/systemd/system/openstack-{{ item }}.service'
+    regexp: '^Type=notify$'
+    line: 'Type=simple'
+    backrefs: True
+  with_items:
+    - nova-api
+    - nova-conductor
+    - nova-scheduler
+    - nova-console
+  when: ansible_os_family == 'RedHat'
+  notify: Daemon reload
+
+- name: Configure nova controller
+  ini_file:
+    dest: /etc/nova/nova.conf
+    section: '{{ item.section }}'
+    option: '{{ item.option }}'
+    value: '{{ item.value }}'
+  with_items:
+    # APIs
+    - section: DEFAULT
+      option: enabled_apis
+      value: 'osapi_compute,metadata'
+    # Database
+    - section: api_database
+      option: connection
+      value: '{{  nova_api_database_url }}'
+    - section: database
+      option: connection
+      value: '{{  nova_database_url }}'
+    # Messaging
+    - section: DEFAULT
+      option: rpc_backend
+      value: rabbit
+    - section: oslo_messaging_rabbit
+      option: rabbit_host
+      value: '{{ rabbit_hostname }}'
+    - section: oslo_messaging_rabbit
+      option: rabbit_userid
+      value: '{{ rabbit_username }}'
+    - section: oslo_messaging_rabbit
+      option: rabbit_password
+      value: '{{ rabbit_password }}'
+    # Keystone
+    - section: DEFAULT
+      option: auth_strategy
+      value: keystone
+      # FIXME memcached_servers
+    - section: keystone_authtoken
+      option: auth_url
+      value: '{{ keystone_protocol }}://{{ keystone_hostname }}:{{ keystone_admin_port }}/'
+    - section: keystone_authtoken
+      option: auth_uri
+      value: '{{ keystone_protocol }}://{{ keystone_hostname }}:{{ keystone_port }}/'
+    - section: keystone_authtoken
+      option: project_domain_name
+      value: Default
+    - section: keystone_authtoken
+      option: user_domain_name
+      value: Default
+    - section: keystone_authtoken
+      option: project_name
+      value: service
+    - section: keystone_authtoken
+      option: username
+      value: nova
+    - section: keystone_authtoken
+      option: password
+      value: '{{ nova_password }}'
+    # Mgmt address
+    - section: DEFAULT
+      option: my_ip
+      value: '{{ nova_my_ip }}'
+    # Neutron
+    - section: DEFAULT
+      option: use_neutron
+      value: True
+    - section: DEFAULT
+      option: firewall_driver
+      value: nova.virt.firewall.NoopFirewallDriver
+    # VNC
+    - section: vnc
+      option: enabled
+      value: True
+    - section: vnc
+      option: vncserver_listen
+      value: 0.0.0.0
+    - section: vnc
+      option: vncserver_proxyclient_address
+      value: '{{ vncserver_proxyclient_address }}'
+    # Glance
+    - section: glance
+      option: api_servers
+      value: '{{ glance_protocol }}://{{ glance_hostname }}:{{ glance_port }}'
+    # Oslo
+    - section: oslo_concurrency
+      option: lock_path
+      value: /var/lib/nova/tmp
+  notify:
+    - Restart nova controller services

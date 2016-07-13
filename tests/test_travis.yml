@@ -1,0 +1,36 @@
+---
+
+- hosts: all
+  remote_user: root
+  become: True
+  pre_tasks:
+
+    - name: Install Ubuntu Cloud archive keyring (Debian)
+      when: ansible_os_family == 'Debian'
+      apt:
+        name: ubuntu-cloud-keyring
+        state: present
+
+    - name: Enable OpenStack (Debian)
+      when: ansible_os_family == 'Debian'
+      apt_repository:
+        repo: 'deb http://ubuntu-cloud.archive.canonical.com/ubuntu trusty-updates/mitaka main'
+        state: present
+        update_cache: yes
+
+    - name: Enable OpenStack (RedHat)
+      when: ansible_os_family == 'RedHat'
+      yum:
+        name: '{{ item }}'
+        state: present
+        update_cache: yes
+      with_items:
+        - centos-release-openstack-mitaka
+        - policycoreutils-python
+
+  roles:
+    - mysql
+    - openstack-keystone
+    # This can be passed via cli variable maybe
+    - openstack-nova-controller
+      rabbit_hostname: dockerhost

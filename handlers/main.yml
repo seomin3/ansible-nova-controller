@@ -1,0 +1,12 @@
+---
+
+- name: Restart nova controller services
+  service:
+    name: '{{ item }}'
+    state: restarted
+  with_items:
+    - '{{ nova_api_service }}'
+    - '{{ nova_conductor_service }}'
+    - '{{ nova_consoleauth_service }}'
+    - '{{ nova_novncproxy_service }}'
+    - '{{ nova_scheduler_service }}'
