@@ -32,6 +32,7 @@ install:
   - sudo apt-get update -qq
   - sudo apt-get install python-pip -y
   - sudo pip install ansible
+  - sudo pip install -y yamllint
   - sudo ansible-galaxy install -r tests/requirements.yml
 
   # TODO:  expose rabbitmq port to conatiners with dockerhost option
@@ -43,6 +44,9 @@ script:
     --volume=/etc/ansible/roles:/etc/ansible/roles:rw ${run_opts}
     --volume="${PWD}":/etc/ansible/roles/openstack-nova-controller:rw ${run_opts}
     ${distribution}-${version}:ansible "${init}" > "${container_id}"
+
+  # Check syntax of YAML files
+  - 'yamllint -c .yamllint.conf'
 
   # Ansible syntax check.
   - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook /etc/ansible/roles/openstack-nova-controller/tests/test_travis.yml --syntax-check'
