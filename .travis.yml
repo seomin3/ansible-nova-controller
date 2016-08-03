@@ -32,7 +32,7 @@ install:
   - sudo apt-get update -qq
   - sudo apt-get install python-pip -y
   - sudo pip install ansible
-  - sudo pip install -y yamllint
+  - sudo pip install yamllint
   - sudo ansible-galaxy install -r tests/requirements.yml
 
   # TODO:  expose rabbitmq port to conatiners with dockerhost option
