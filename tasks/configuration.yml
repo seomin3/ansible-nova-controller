@@ -103,4 +103,5 @@
       option: lock_path
       value: /var/lib/nova/tmp
   notify:
-    - Restart nova controller services
+    - Sync nova database
+    - Sync nova API database
