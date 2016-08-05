@@ -10,3 +10,17 @@
     - '{{ nova_consoleauth_service }}'
     - '{{ nova_novncproxy_service }}'
     - '{{ nova_scheduler_service }}'
+
+- name: 'Sync nova database'
+  command: 'nova-manage db sync'
+  become: True
+  become_user: 'nova'
+  notify:
+    - 'Restart nova controller services'
+
+- name: 'Sync nova API database'
+  command: 'nova-manage api_db sync'
+  become: True
+  become_user: 'nova'
+  notify:
+    - 'Restart nova controller services'

@@ -14,7 +14,7 @@ mysql_databases:
   - name: 'glance'
   - name: 'neutron'
   - name: 'nova'
-  - name: 'nova-api'
+  - name: 'nova_api'
 mysql_users:
   - name: 'keystone'
     password: 'keystonepassword'
@@ -30,7 +30,7 @@ mysql_users:
     host: '%'
   - name: 'nova'
     password: 'novapassword'
-    priv: 'nova.*:ALL'
+    priv: 'nova.*:ALL/nova_api.*:ALL'
     host: '%'
 
 # Keystone
@@ -78,7 +78,7 @@ keystone_endpoints:
     admin_url: 'http://localhost:8774/v2/%(tenant_id)s'
 
 # Nova
-nova_my_ip: 'localhost'
+nova_my_ip: '127.0.0.1'
 nova_database_url: 'mysql+pymysql://nova:novapassword@localhost/nova'
 nova_api_database_url: 'mysql+pymysql://nova:novapassword@localhost/nova_api'
 vncserver_proxyclient_address: 'localhost'
