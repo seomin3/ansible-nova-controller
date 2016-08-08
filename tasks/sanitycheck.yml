@@ -1,1 +1,15 @@
 ---
+
+- name: SANITY CHECK List nova instances
+  shell: >-
+    openstack
+    --os-auth-url {{ keystone_protocol }}://{{ keystone_hostname }}:{{ keystone_port }}/v2.0
+    --os-project-name "{{ demo_project }}"
+    --os-username "{{ demo_user }}"
+    --os-auth-type password
+    --os-password "{{ demo_pass }}"
+    server list
+  register: server_list_test
+  changed_when: server_list_test.rc != 0
+
+- debug: var=server_list_test.stdout_lines

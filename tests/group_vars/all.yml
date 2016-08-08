@@ -91,3 +91,6 @@ glance_protocol: http
 rabbit_hostname: localhost
 rabbit_username: guest
 rabbit_password: guest
+demo_user: 'demo'
+demo_pass: 'demo password'
+demo_project: 'demo'
