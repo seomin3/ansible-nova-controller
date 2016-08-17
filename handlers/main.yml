@@ -14,6 +14,9 @@
   notify:
     - 'Restart nova controller services'
 
+- name: Daemon reload
+  command: 'systemctl daemon-reload'
+
 - name: Restart nova controller services
   service:
     name: '{{ item }}'
