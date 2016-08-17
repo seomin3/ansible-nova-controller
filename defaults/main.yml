@@ -11,6 +11,7 @@ keystone_hostname: 'localhost'
 keystone_port: 5000
 keystone_protocol: 'http'
 nova_password: 'nova_pass_default'
+nova_user: 'nova'
 # Nova
 vncserver_proxyclient_address: '{{ nova_my_ip }}'
 vncserver_proxy_address: '{{ nova_my_ip }}'
