@@ -29,6 +29,16 @@
         - policycoreutils-python
 
   roles:
+
+    - role: rabbitmq
+      rabbitmq_tcp_address: '0.0.0.0'
+      rabbitmq_vhosts:
+        - name: '/'
+      rabbitmq_users:
+        - vhost: '/'
+          user: 'rabbit_username_default'
+          password: 'rabbit_pass_default'
+
     - role: mysql
       mysql_daemon: 'mysql'
       mysql_log_error: '/var/log/mysql/error.log'
