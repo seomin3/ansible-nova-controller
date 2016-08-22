@@ -1,10 +1,13 @@
 ---
 # WARNING: This may not be your desired MGMT address.
 nova_my_ip: '{{ ansible_default_ipv4.address }}'
+
 # RabbitMQ
-rabbit_hostname: 'localhost'
-rabbit_username: 'rabbit_username_default'
-rabbit_pass: 'rabbit_pass_default'
+openstack_nova_controller_rabbit_hostname: 'localhost'
+openstack_nova_controller_rabbit_username: 'rabbit_username_default'
+openstack_nova_controller_rabbit_password: 'rabbit_pass_default'
+openstack_nova_controller_rabbit_virtual_host: '/'
+
 # Keystone
 keystone_admin_port: 35357
 keystone_hostname: 'localhost'
@@ -12,10 +15,12 @@ keystone_port: 5000
 keystone_protocol: 'http'
 nova_password: 'nova_pass_default'
 nova_user: 'nova'
+
 # Nova
 vncserver_proxyclient_address: '{{ nova_my_ip }}'
 vncserver_proxy_address: '{{ nova_my_ip }}'
 novncproxy_base_url: 'http://{{ vncserver_proxy_address }}:6080/vnc_auto.html'
+
 # Glance
 glance_hostname: 'localhost'
 glance_port: 9292
