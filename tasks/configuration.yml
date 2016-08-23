@@ -40,13 +40,16 @@
       value: rabbit
     - section: oslo_messaging_rabbit
       option: rabbit_host
-      value: '{{ rabbit_hostname }}'
+      value: '{{ openstack_nova_controller_rabbit_hostname }}'
     - section: oslo_messaging_rabbit
       option: rabbit_userid
-      value: '{{ rabbit_username }}'
+      value: '{{ openstack_nova_controller_rabbit_username }}'
     - section: oslo_messaging_rabbit
       option: rabbit_password
-      value: '{{ rabbit_password }}'
+      value: '{{ openstack_nova_controller_rabbit_password }}'
+    - section: oslo_messaging_rabbit
+      option: rabbit_virtual_host
+      value: '{{ openstack_nova_controller_rabbit_virtual_host }}'
     # Keystone
     - section: DEFAULT
       option: auth_strategy
