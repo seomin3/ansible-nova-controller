@@ -4,8 +4,9 @@
   shell: >-
     openstack
     --os-identity-api-version 3
-    --os-auth-url
-      {{ openstack_nova_controller_keystone_protocol }}://{{ openstack_nova_controller_keystone_hostname }}:{{ openstack_nova_controller_keystone_port }}/v3
+    --os-auth-url {{ openstack_nova_controller_keystone_protocol }}://
+                  {{ - openstack_nova_controller_keystone_hostname }}:
+                  {{ - openstack_nova_controller_keystone_port }}/v3
     --os-project-name "{{ openstack_nova_controller_demo_project }}"
     --os-username "{{ openstack_nova_controller_demo_user }}"
     --os-auth-type password
