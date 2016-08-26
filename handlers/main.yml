@@ -22,8 +22,8 @@
     name: '{{ item }}'
     state: restarted
   with_items:
-    - '{{ nova_api_service }}'
-    - '{{ nova_conductor_service }}'
-    - '{{ nova_consoleauth_service }}'
-    - '{{ nova_novncproxy_service }}'
-    - '{{ nova_scheduler_service }}'
+    - '{{ openstack_nova_controller_nova_api_service }}'
+    - '{{ openstack_nova_controller_nova_conductor_service }}'
+    - '{{ openstack_nova_controller_nova_consoleauth_service }}'
+    - '{{ openstack_nova_controller_nova_novncproxy_service }}'
+    - '{{ openstack_nova_controller_nova_scheduler_service }}'
