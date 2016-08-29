@@ -27,7 +27,7 @@
 
 - name: Set nova consoleauth service facts
   set_fact:
-    openstack_nova_controller_nova_consoleauth_service: openstack-nova-console
+    openstack_nova_controller_nova_consoleauth_service: openstack-nova-consoleauth
   when: ansible_os_family == 'RedHat'
 
 - name: Set nova novncproxy service facts
