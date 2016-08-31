@@ -1,21 +1,5 @@
 ---
 
-# Changing to 'simple' type to prevent hard dependency on other roles
-# See: http://lists.openstack.org/pipermail/openstack-dev/2015-December/083095.html
-- name: Fix systemd type
-  lineinfile:
-    dest: '/usr/lib/systemd/system/openstack-{{ item }}.service'
-    regexp: '^Type=notify$'
-    line: 'Type=simple'
-    backrefs: True
-  with_items:
-    - nova-api
-    - nova-conductor
-    - nova-scheduler
-    - nova-console
-  when: ansible_os_family == 'RedHat'
-  notify: Daemon reload
-
 - name: Configure nova controller
   ini_file:
     dest: /etc/nova/nova.conf
@@ -56,13 +40,22 @@
       value: keystone
     - section: keystone_authtoken
       option: identity_uri
-      value: '{{ openstack_nova_controller_keystone_protocol }}://{{ openstack_nova_controller_keystone_hostname }}:{{ openstack_nova_controller_keystone_admin_port }}'
+      value: >-
+        {{- openstack_nova_controller_keystone_protocol }}://
+        {{- openstack_nova_controller_keystone_hostname }}:
+        {{- openstack_nova_controller_keystone_admin_port }}
     - section: keystone_authtoken
       option: auth_url
-      value: '{{ openstack_nova_controller_keystone_protocol }}://{{ openstack_nova_controller_keystone_hostname }}:{{ openstack_nova_controller_keystone_admin_port }}'
+      value: >-
+        {{- openstack_nova_controller_keystone_protocol }}://
+        {{- openstack_nova_controller_keystone_hostname }}:
+        {{- openstack_nova_controller_keystone_admin_port }}
     - section: keystone_authtoken
       option: auth_uri
-      value: '{{ openstack_nova_controller_keystone_protocol }}://{{ openstack_nova_controller_keystone_hostname }}:{{ openstack_nova_controller_keystone_port }}/v3'
+      value: >-
+        {{- openstack_nova_controller_keystone_protocol }}://
+        {{- openstack_nova_controller_keystone_hostname }}:
+        {{- openstack_nova_controller_keystone_port }}/v3
     - section: keystone_authtoken
       option: project_domain_name
       value: default
@@ -114,12 +107,45 @@
     # Glance
     - section: glance
       option: api_servers
-      value: '{{ openstack_nova_controller_glance_protocol }}://{{ openstack_nova_controller_glance_hostname }}:{{ openstack_nova_controller_glance_port }}'
+      value: >-
+        {{- openstack_nova_controller_glance_protocol }}://
+        {{- openstack_nova_controller_glance_hostname }}:
+        {{- openstack_nova_controller_glance_port }}
     # Oslo
     - section: oslo_concurrency
       option: lock_path
       value: /var/lib/nova/tmp
   notify:
-    - Sync nova database
-    - Sync nova API database
     - Restart nova controller services
+
+- name: Get current Nova database version
+  command: 'nova-manage db version'
+  always_run: True
+  become: True
+  become_user: 'nova'
+  changed_when: openstack_nova_manage_db_version.stdout|int != openstack_nova_database_schema_version
+  register: openstack_nova_manage_db_version
+
+- name: Migrate Nova database to desired version
+  command: 'nova-manage db sync {{ openstack_nova_database_schema_version }}'
+  become: True
+  become_user: 'nova'
+  notify:
+    - Restart nova controller services
+  when: openstack_nova_manage_db_version|changed
+
+- name: Get current Nova API database version
+  command: 'nova-manage api_db version'
+  always_run: True
+  become: True
+  become_user: 'nova'
+  changed_when: openstack_nova_manage_api_db_version.stdout|int != openstack_nova_api_database_schema_version
+  register: openstack_nova_manage_api_db_version
+
+- name: Migrate Nova API database to desired version
+  command: 'nova-manage api_db sync {{ openstack_nova_api_database_schema_version }}'
+  become: True
+  become_user: 'nova'
+  notify:
+    - Restart nova controller services
+  when: openstack_nova_manage_api_db_version|changed

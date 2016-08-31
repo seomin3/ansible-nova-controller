@@ -2,6 +2,10 @@
 # WARNING: This may not be your desired MGMT address.
 openstack_nova_controller_nova_my_ip: '{{ ansible_default_ipv4.address }}'
 
+# Database
+openstack_nova_database_schema_version: 319
+openstack_nova_api_database_schema_version: 7
+
 # RabbitMQ
 openstack_nova_controller_rabbit_hostname: 'localhost'
 openstack_nova_controller_rabbit_username: 'rabbit_username_default'
