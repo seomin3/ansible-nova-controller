@@ -1,0 +1,44 @@
+---
+
+- block:
+    - name: 'Create drop-in directory for nova services'
+      file:
+        path: '/etc/systemd/system/{{ item }}.service.d'
+        state: directory
+      with_items:
+        - '{{ openstack_nova_controller_nova_api_service }}'
+        - '{{ openstack_nova_controller_nova_conductor_service }}'
+        - '{{ openstack_nova_controller_nova_consoleauth_service }}'
+        - '{{ openstack_nova_controller_nova_scheduler_service }}'
+
+    # Changing to 'simple' type to prevent hard dependency on other roles
+    # See: http://lists.openstack.org/pipermail/openstack-dev/2015-December/083095.html
+    - name: 'Fix systemd type for nova services'
+      copy:
+        content: |
+          [Service]
+          Type=simple
+        dest: '/etc/systemd/system/{{ item }}.service.d/type.conf'
+      register: openstack_nova_controller_service_d_type_conf
+      with_items:
+        - '{{ openstack_nova_controller_nova_api_service }}'
+        - '{{ openstack_nova_controller_nova_conductor_service }}'
+        - '{{ openstack_nova_controller_nova_consoleauth_service }}'
+        - '{{ openstack_nova_controller_nova_scheduler_service }}'
+
+    - name: 'Reload systemd manager configuration'
+      command: 'systemctl daemon-reload'
+      when: openstack_nova_controller_service_d_type_conf|changed
+  when: ansible_os_family == 'RedHat'
+
+- name: Start and enable services
+  service:
+    enabled: True
+    name: '{{ item }}'
+    state: started
+  with_items:
+    - '{{ openstack_nova_controller_nova_api_service }}'
+    - '{{ openstack_nova_controller_nova_conductor_service }}'
+    - '{{ openstack_nova_controller_nova_consoleauth_service }}'
+    - '{{ openstack_nova_controller_nova_novncproxy_service }}'
+    - '{{ openstack_nova_controller_nova_scheduler_service }}'
