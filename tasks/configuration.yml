@@ -91,6 +91,36 @@
     - section: DEFAULT
       option: firewall_driver
       value: nova.virt.firewall.NoopFirewallDriver
+    - section: neutron
+      option: url
+      value: >-
+        {{- openstack_nova_controller_neutron_protocol }}://
+        {{- openstack_nova_controller_neutron_hostname }}:
+        {{- openstack_nova_controller_neutron_port }}
+    - section: neutron
+      option: auth_url
+      value: >-
+        {{- openstack_nova_controller_keystone_protocol }}://
+        {{- openstack_nova_controller_keystone_hostname }}:
+        {{- openstack_nova_controller_keystone_admin_port }}
+    - section: neutron
+      option: auth_type
+      value: password
+    - section: neutron
+      option: project_name
+      value: service
+    - section: neutron
+      option: username
+      value: '{{ openstack_nova_controller_neutron_username }}'
+    - section: neutron
+      option: password
+      value: '{{ openstack_nova_controller_neutron_password }}'
+    - section: neutron
+      option: service_metadata_proxy
+      value: True
+    - section: neutron
+      option: metadata_proxy_shared_secret
+      value: '{{ openstack_nova_controller_neutron_metadata_secret }}'
     # VNC
     - section: vnc
       option: enabled
