@@ -1,5 +1,11 @@
 ---
 
+- name: Wait for nova-api service to become available
+  wait_for:
+    host: '{{ openstack_nova_controller_sanitycheck_address  }}'
+    port: '{{ openstack_nova_controller_sanitycheck_port }}'
+    delay: 3
+
 - name: SANITY CHECK List nova instances
   shell: >-
     openstack
