@@ -1,51 +1,27 @@
 ---
 
-- name: Set nova API service facts
+- name: Set nova-controller facts
   set_fact:
-    openstack_nova_controller_nova_api_service: nova-api
+    openstack_nova_controller_nova_api_service: 'nova-api'
+    openstack_nova_controller_nova_conductor_service: 'nova-conductor'
+    openstack_nova_controller_nova_consoleauth_service: 'nova-consoleauth'
+    openstack_nova_controller_nova_novncproxy_service: 'nova-novncproxy'
+    openstack_nova_controller_nova_scheduler_service: 'nova-scheduler'
+    openstack_nova_database_migration_repository: >-
+      /usr/lib/python2.7/dist-packages/nova/db/sqlalchemy/migrate_repo/versions
+    openstack_nova_api_database_migration_repository: >-
+      /usr/lib/python2.7/dist-packages/nova/db/sqlalchemy/api_migrations/migrate_repo/versions
   when: ansible_os_family == 'Debian'
 
-- name: Set nova API service facts
+- name: Set nova-controller facts
   set_fact:
-    openstack_nova_controller_nova_api_service: openstack-nova-api
-  when: ansible_os_family == 'RedHat'
-
-- name: Set nova conductor service facts
-  set_fact:
-    openstack_nova_controller_nova_conductor_service: nova-conductor
-  when: ansible_os_family == 'Debian'
-
-- name: Set nova conductor service facts
-  set_fact:
-    openstack_nova_controller_nova_conductor_service: openstack-nova-conductor
-  when: ansible_os_family == 'RedHat'
-
-- name: Set nova consoleauth service facts
-  set_fact:
-    openstack_nova_controller_nova_consoleauth_service: nova-consoleauth
-  when: ansible_os_family == 'Debian'
-
-- name: Set nova consoleauth service facts
-  set_fact:
-    openstack_nova_controller_nova_consoleauth_service: openstack-nova-consoleauth
-  when: ansible_os_family == 'RedHat'
-
-- name: Set nova novncproxy service facts
-  set_fact:
-    openstack_nova_controller_nova_novncproxy_service: nova-novncproxy
-  when: ansible_os_family == 'Debian'
-
-- name: Set nova novncproxy service facts
-  set_fact:
-    openstack_nova_controller_nova_novncproxy_service: openstack-nova-novncproxy
-  when: ansible_os_family == 'RedHat'
-
-- name: Set nova scheduler service facts
-  set_fact:
-    openstack_nova_controller_nova_scheduler_service: nova-scheduler
-  when: ansible_os_family == 'Debian'
-
-- name: Set nova scheduler service facts
-  set_fact:
-    openstack_nova_controller_nova_scheduler_service: openstack-nova-scheduler
+    openstack_nova_controller_nova_api_service: 'openstack-nova-api'
+    openstack_nova_controller_nova_conductor_service: 'openstack-nova-conductor'
+    openstack_nova_controller_nova_consoleauth_service: 'openstack-nova-consoleauth'
+    openstack_nova_controller_nova_novncproxy_service: 'openstack-nova-novncproxy'
+    openstack_nova_controller_nova_scheduler_service: 'openstack-nova-scheduler'
+    openstack_nova_database_migration_repository: >-
+      /usr/lib/python2.7/site-packages/nova/db/sqlalchemy/migrate_repo/versions
+    openstack_nova_api_database_migration_repository: >-
+      /usr/lib/python2.7/site-packages/nova/db/sqlalchemy/api_migrations/migrate_repo/versions
   when: ansible_os_family == 'RedHat'

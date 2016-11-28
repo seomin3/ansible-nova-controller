@@ -148,32 +148,52 @@
   notify:
     - Restart nova controller services
 
+- name: Get latest Nova database version
+  shell: >-
+    ls {{ openstack_nova_database_migration_repository }}
+    | grep '^[0-9]\{3\}_' | sort -n | tail -n 1 | awk -F '_' '{ print $1; }'
+  always_run: True
+  changed_when: False
+  register: openstack_nova_database_schema_version
+
 - name: Get current Nova database version
   command: 'nova-manage db version'
   always_run: True
   become: True
   become_user: 'nova'
-  changed_when: openstack_nova_manage_db_version.stdout|int != openstack_nova_database_schema_version
+  changed_when: >-
+    openstack_nova_manage_db_version.stdout|int
+    != openstack_nova_database_schema_version.stdout|int
   register: openstack_nova_manage_db_version
 
 - name: Migrate Nova database to desired version
-  command: 'nova-manage db sync {{ openstack_nova_database_schema_version }}'
+  command: 'nova-manage db sync {{ openstack_nova_database_schema_version.stdout }}'
   become: True
   become_user: 'nova'
   notify:
     - Restart nova controller services
   when: openstack_nova_manage_db_version|changed
 
+- name: Get latest Nova API database version
+  shell: >-
+    ls {{ openstack_nova_api_database_migration_repository }}
+    | grep '^[0-9]\{3\}_' | sort -n | tail -n 1 | awk -F '_' '{ print $1; }'
+  always_run: True
+  changed_when: False
+  register: openstack_nova_api_database_schema_version
+
 - name: Get current Nova API database version
   command: 'nova-manage api_db version'
   always_run: True
   become: True
   become_user: 'nova'
-  changed_when: openstack_nova_manage_api_db_version.stdout|int != openstack_nova_api_database_schema_version
+  changed_when: >-
+    openstack_nova_manage_api_db_version.stdout|int
+    != openstack_nova_api_database_schema_version.stdout|int
   register: openstack_nova_manage_api_db_version
 
 - name: Migrate Nova API database to desired version
-  command: 'nova-manage api_db sync {{ openstack_nova_api_database_schema_version }}'
+  command: 'nova-manage api_db sync {{ openstack_nova_api_database_schema_version.stdout }}'
   become: True
   become_user: 'nova'
   notify:
