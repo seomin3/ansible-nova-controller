@@ -1,6 +1,7 @@
 ---
 
 - include: test_common.yml
+- include: mysql.yml
 
 - hosts: all
   become: True
@@ -15,6 +16,5 @@
           user: 'rabbit_username_default'
           password: 'rabbit_pass_default'
 
-    - role: mysql
     - role: openstack-keystone
     - role: openstack-nova-controller
