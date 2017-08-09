@@ -37,3 +37,6 @@ openstack_nova_controller_neutron_username: 'neutron'
 # Sanity Check
 openstack_nova_controller_sanitycheck_address: 'localhost'
 openstack_nova_controller_sanitycheck_port: 8774
+openstack_nova_controller_demo_project: demo
+openstack_nova_controller_demo_user: demo
+openstack_nova_controller_demo_pass: demo
